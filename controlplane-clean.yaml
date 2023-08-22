@@ -1,0 +1,127 @@
+version: v1alpha1 # Indicates the schema used to decode the contents.
+debug: false # Enable verbose logging to the console.
+persist: true # Indicates whether to pull the machine config upon every boot.
+# Provides machine specific configuration options.
+machine:
+    type: controlplane # Defines the role of the machine within the cluster.
+    token: bob # The `token` is used by a machine to join the PKI of the cluster.
+    # The root certificate authority of the PKI.
+    ca:
+        crt: bob
+        key: bob
+    # Extra certificate subject alternative names for the machine's certificate.
+    certSANs: []
+
+    # Used to provide additional options to the kubelet.
+    kubelet:
+        image: ghcr.io/siderolabs/kubelet:v1.27.2 # The `image` field is an optional reference to an alternative kubelet image.
+        defaultRuntimeSeccompProfileEnabled: true # Enable container runtime default Seccomp profile.
+        disableManifestsDirectory: true # The `disableManifestsDirectory` field configures the kubelet to get static pod manifests from the /etc/kubernetes/manifests directory.
+        
+    # Provides machine specific network configuration options.
+    network: 
+    # `interfaces` is used to define the network interface configuration.
+        interfaces:
+          - interface: eth0 # The interface name.
+            vip:
+                ip: 10.5.30.130 # Specifies the IP address to be used.
+
+    install:
+        disk: /dev/sda # The disk used for installations.
+        image: ghcr.io/siderolabs/installer:v1.4.1 # Allows for supplying the image used to perform the installation.
+        bootloader: true # Indicates if a bootloader should be installed.
+        wipe: false # Indicates if the installation disk should be wiped at installation time.
+        
+    registries: {}
+
+    # Features describe individual Talos features that can be switched on or off.
+    features:
+        rbac: true # Enable role-based access control (RBAC).
+        stableHostname: true # Enable stable default hostname.
+        apidCheckExtKeyUsage: true # Enable checks for extended key usage of client certificates in apid.
+        
+    time:
+        disabled: false # Indicates if the time service is disabled for the machine.
+        # Specifies time (NTP) servers to use for setting the system time.
+        servers:
+            - pool.ntp.org
+        bootTimeout: 2m0s # Specifies the timeout when the node time is considered to be in sync unlocking the boot sequence.
+
+cluster:
+    id: bob # Globally unique identifier for this cluster (base64 encoded random 32 bytes).
+    secret: bob # Shared secret of cluster (base64 encoded random 32 bytes).
+    # Provides control plane specific configuration options.
+    controlPlane:
+        endpoint: https://10.5.30.130:6443 # Endpoint is the canonical controlplane endpoint, which can be an IP address or a DNS hostname.
+    clusterName: talos-cluster # Configures the cluster's name.
+    # Provides cluster specific network configuration options.
+    network:
+        dnsDomain: cluster.local # The domain used by Kubernetes DNS.
+        podSubnets:
+            - 10.244.0.0/16
+        serviceSubnets:
+            - 10.96.0.0/12
+        
+    token: bob # The [bootstrap token](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/) used to join the cluster.
+    secretboxEncryptionSecret: bob # A key used for the [encryption of secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/).
+    ca:
+        crt: bob
+        key: bob
+    aggregatorCA:
+        crt: bob
+        key: bob
+    serviceAccount:
+        key: bob
+    apiServer:
+        image: registry.k8s.io/kube-apiserver:v1.27.1 # The container image used in the API server manifest.
+        certSANs:
+            - 10.5.30.130
+            - 10.5.30.131
+        disablePodSecurityPolicy: true # Disable PodSecurityPolicy in the API server and default manifests.
+        admissionControl:
+            - name: PodSecurity # Name is the name of the admission controller.
+              configuration:
+                apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+                defaults:
+                    audit: restricted
+                    audit-version: latest
+                    enforce: baseline
+                    enforce-version: latest
+                    warn: restricted
+                    warn-version: latest
+                exemptions:
+                    namespaces:
+                        - kube-system
+                    runtimeClasses: []
+                    usernames: []
+                kind: PodSecurityConfiguration
+        auditPolicy:
+            apiVersion: audit.k8s.io/v1
+            kind: Policy
+            rules:
+                - level: Metadata
+    controllerManager:
+        image: registry.k8s.io/kube-controller-manager:v1.27.1 # The container image used in the controller manager manifest.
+    proxy:
+        image: registry.k8s.io/kube-proxy:v1.27.1 # The container image used in the kube-proxy manifest.
+        
+    scheduler:
+        image: registry.k8s.io/kube-scheduler:v1.27.1 # The container image used in the scheduler manifest.
+    discovery:
+        enabled: true # Enable the cluster membership discovery feature.
+        registries:
+            kubernetes:
+                disabled: true # Disable Kubernetes discovery registry.
+            service: {}
+    etcd:
+        ca:
+            crt: bob
+            key: bob
+        
+    extraManifests: []
+
+    inlineManifests: []
+
+
+    
+
