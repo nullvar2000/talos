@@ -1,0 +1,4 @@
+.terraform/
+.talos.code-workspace
+terraform.tfstate
+terraform.tfstate.backup
