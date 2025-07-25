@@ -250,6 +250,34 @@ resource "talos_machine_configuration_apply" "worker" {
           servers = local.ntp_servers
         }
       }
+    }),
+    yamlencode({
+      apiVersion = "v1alpha1"
+      kind = "VolumeConfig"
+      name = "EPHEMERAL"
+      provisioning = {
+        diskSelector = {
+          match = "disk.transport == \"sata\""
+        }
+        minSize = "30GB"
+        maxSize = "40GB"
+        grow = true
+      }
+    }),
+    yamlencode({
+      apiVersion = "v1alpha1"
+      kind = "UserVolumeConfig"
+      name = "scratch"
+      provisioning = {
+        diskSelector = {
+          match = "disk.transport == \"sata\""
+        }
+        minSize = "10GB"
+        grow = true
+      }
+      filesystem = {
+        type = "xfs"
+      } 
     })
   ]
 
