@@ -13,7 +13,8 @@ tofu import talos_machine_bootstrap.this 1
 ```
 
 ## Notes
-Changing the talos version variable doesn't upgrade cluster, apparently there is no way to update the cluster with the provisioner.
+1. Changing the talos version variable doesn't upgrade cluster, apparently there is no way to update the cluster with the provisioner.
+2. volume configs not really working
 
 # Manual commands
 gen secrets - talosctl gen secrets -o secrets.yaml
