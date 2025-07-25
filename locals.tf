@@ -1,7 +1,7 @@
 locals {
   cluster_name = "talos-cluster"
   cluster_endpoint = "https://192.168.30.100:6443"
-  talos_version = "v1.9.6"
+  talos_version = "v1.10.5"
   kubernetes_version = "v1.31.7"
   
   node_name_prefix = "talos"
@@ -38,7 +38,7 @@ locals {
   }
 
   worker = {
-    node_count = 3
+    node_count = 1
     ip_range = "192.168.30.0/24"
     ip_start = 121
     name_indicator = "w"
@@ -50,7 +50,7 @@ locals {
   }
 
   nvidia = {
-    node_count = 1
+    node_count = 0
     ip_range = "192.168.30.0/24"
     ip_start = 127
     name_indicator = "w"
