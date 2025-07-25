@@ -32,3 +32,5 @@ Do these one node at a time.
 upgrade os - talosctl -n <node> upgrade --image ghcr.io/siderolabs/installer:v1.4.5 --preserve
 
 upgrade k8s - talosctl -n <node> upgrade-k8s --to 1.27.3 --dry-run
+
+return to maintenance talosctl -n <node> reset --system-labels-to-wipe EPHEMERAL,STATE --reboot
