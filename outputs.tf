@@ -40,7 +40,11 @@ resource "local_file" "worker_configuration" {
   filename = "outputs/worker_configuration.yaml"
 }
 
-resource "local_file" "nvidia_configuration" {
-  content  = talos_machine_configuration_apply.nvidia[0].machine_configuration
-  filename = "outputs/nvidia_configuration.yaml"
-}
+# resource "local_file" "nvidia_configuration" {
+#   depends_on = [
+#     talos_machine_configuration_apply.nvidia
+#   ]
+
+#   content  = talos_machine_configuration_apply.nvidia[0].machine_configuration
+#   filename = "outputs/nvidia_configuration.yaml"
+# }
